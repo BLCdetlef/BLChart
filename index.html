@@ -16,7 +16,7 @@
     }
     #chart-container {
       width: 80vw;
-      height: 60vh;
+      height: 80vh;
     }
   </style>
 </head>
@@ -43,8 +43,11 @@
               label: 'CSV-Daten',
               data: werte,
               borderColor: 'white',
+              backgroundColor: 'white',     // Füllung der Punkte
               borderWidth: 2,
-              pointRadius: 0,
+              pointRadius: 4,
+              pointHoverRadius: 6,
+              pointStyle: 'circle',
               tension: 0.1
             }]
           },
