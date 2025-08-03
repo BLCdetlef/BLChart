@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>Liniendiagramm aus CSV</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <style>
     body {
       margin: 0;
@@ -15,8 +15,8 @@
       height: 100vh;
     }
     #chart-container {
-      width: 8vw;
-      height: 8vh;
+      width: 80vw;
+      height: 60vh;
     }
   </style>
 </head>
@@ -29,11 +29,30 @@
     const ctx = document.getElementById('liniendiagramm').getContext('2d');
 
     fetch('daten.csv')
-      .then(response => response.text())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.text();
+      })
       .then(csvText => {
-        const data = Papa.parse(csvText, { header: true }).data;
-        const labels = data.map(row => parseInt(row.jahr));
-        const werte = data.map(row => parseFloat(row.wert));
+        const parseResult = Papa.parse(csvText, { header: true });
+        
+        if (parseResult.errors.length > 0) {
+          console.warn('CSV parsing errors:', parseResult.errors);
+        }
+        
+        const data = parseResult.data;
+        
+        // Filter out empty rows and validate data
+        const validData = data.filter(row => row.jahr && row.wert && !isNaN(row.jahr) && !isNaN(row.wert));
+        
+        if (validData.length === 0) {
+          throw new Error('No valid data found in CSV file');
+        }
+        
+        const labels = validData.map(row => parseInt(row.jahr));
+        const werte = validData.map(row => parseFloat(row.wert));
 
         new Chart(ctx, {
           type: 'line',
@@ -73,6 +92,11 @@
             }
           }
         });
+      })
+      .catch(error => {
+        console.error('Error loading or parsing CSV data:', error);
+        document.getElementById('chart-container').innerHTML = 
+          '<div style="color: white; text-align: center; padding: 20px;">Fehler beim Laden der Daten: ' + error.message + '</div>';
       });
   </script>
 </body>
