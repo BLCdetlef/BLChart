@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Liniendiagramm aus CSV</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="papaparse.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      background-color: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    #chart-container {
+      width: 8vw;
+      height: 8vh;
+    }
+  </style>
+</head>
+<body>
+  <div id="chart-container">
+    <canvas id="liniendiagramm"></canvas>
+  </div>
+
+  <script>
+    const ctx = document.getElementById('liniendiagramm').getContext('2d');
+
+    fetch('daten.csv')
+      .then(response => response.text())
+      .then(csvText => {
+        const data = Papa.parse(csvText, { header: true }).data;
+        const labels = data.map(row => parseInt(row.jahr));
+        const werte = data.map(row => parseFloat(row.wert));
+
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'CSV-Daten',
+              data: werte,
+              borderColor: 'white',
+              borderWidth: 2,
+              pointRadius: 0,
+              tension: 0.1
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                grid: { color: '#aaa', lineWidth: 1 },
+                ticks: { color: '#aaa' },
+                min: 1700,
+                max: 2100
+              },
+              y: {
+                grid: { color: '#aaa', lineWidth: 1 },
+                ticks: {
+                  color: '#aaa',
+                  callback: value => value + '%'
+                },
+                min: 0,
+                max: 100
+              }
+            },
+            plugins: {
+              legend: { display: false }
+            }
+          }
+        });
+      });
+  </script>
+</body>
+</html>
