@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <title>Liniendiagramm aus CSV</title>
+  <title>Mehrere CSV-Linien</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="papaparse.min.js"></script>
   <style>
@@ -28,55 +28,71 @@
   <script>
     const ctx = document.getElementById('liniendiagramm').getContext('2d');
 
-    fetch('daten.csv')
-      .then(response => response.text())
-      .then(csvText => {
-        const data = Papa.parse(csvText, { header: true }).data;
-        const labels = data.map(row => parseInt(row.jahr));
-        const werte = data.map(row => parseFloat(row.wert));
+    // CSV-Dateien + Farben + Namen der Linien
+    const datenquellen = [
+      { file: 'kunststoffproduktion_global_01.csv', color: 'red', label: 'Pestizide' },
+      { file: 'temperaturen_global_01.csv', color: 'green', label: 'Treibhausgase' },
+      { file: 'thg_emissionen_global_01.csv', color: 'orange', label: 'Süßwasserverbrauch' } // optional
+    ];
 
-        new Chart(ctx, {
-          type: 'line',
-          data: {
-            labels: labels,
-            datasets: [{
-              label: 'CSV-Daten',
-              data: werte,
-              borderColor: 'white',
-              backgroundColor: 'white',     // Füllung der Punkte
-              borderWidth: 2,
-              pointRadius: 4,
-              pointHoverRadius: 6,
-              pointStyle: 'circle',
-              tension: 0.1
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              x: {
-                grid: { color: '#aaa', lineWidth: 1 },
-                ticks: { color: '#aaa' },
-                min: 1700,
-                max: 2100
-              },
-              y: {
-                grid: { color: '#aaa', lineWidth: 1 },
-                ticks: {
-                  color: '#aaa',
-                  callback: value => value + '%'
-                },
-                min: 0,
-                max: 100
-              }
+    // CSV-Dateien parallel laden
+    Promise.all(datenquellen.map(source =>
+      fetch(source.file)
+        .then(res => res.text())
+        .then(text => {
+          const parsed = Papa.parse(text, { header: true }).data;
+          return {
+            label: source.label,
+            data: parsed.map(row => ({
+              x: parseInt(row.jahr),
+              y: parseFloat(row.wert)
+            })),
+            borderColor: source.color,
+            backgroundColor: source.color,
+            pointRadius: 4,
+            pointHoverRadius: 6,
+            tension: 0.1
+          };
+        })
+    )).then(datasets => {
+      new Chart(ctx, {
+        type: 'line',
+        data: { datasets },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              type: 'linear',
+              grid: { color: '#aaa', lineWidth: 1 },
+              ticks: { color: '#aaa' },
+              min: 1700,
+              max: 2100,
+              title: { display: true, text: 'Jahr', color: '#aaa' }
             },
-            plugins: {
-              legend: { display: false }
+            y: {
+              grid: { color: '#aaa', lineWidth: 1 },
+              ticks: {
+                color: '#aaa',
+                callback: value => value + '%'
+              },
+              min: 0,
+              max: 100,
+              title: { display: true, text: 'Wert (%)', color: '#aaa' }
+            }
+          },
+          plugins: {
+            legend: {
+              position: 'right',
+              labels: {
+                color: '#fff',
+                boxWidth: 12
+              }
             }
           }
-        });
+        }
       });
+    });
   </script>
 </body>
 </html>
