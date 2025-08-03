@@ -30,9 +30,9 @@
 
     // CSV-Dateien + Farben + Namen der Linien
     const datenquellen = [
-      { file: 'kunststoffproduktion_global_01.csv', color: 'red', label: 'Pestizide' },
-      { file: 'temperaturen_global_01.csv', color: 'green', label: 'Treibhausgase' },
-      { file: 'thg_emissionen_global_01.csv', color: 'orange', label: 'Süßwasserverbrauch' } // optional
+      { file: 'kunststoffproduktion_global_01.csv', color: 'red', label: source.file.replace('.csv', ''), },
+      { file: 'temperaturen_global_01.csv', color: 'green', label: source.file.replace('.csv', ''), },
+      { file: 'thg_emissionen_global_01.csv', color: 'orange', label: source.file.replace('.csv', ''), } // optional
     ];
 
     // CSV-Dateien parallel laden
@@ -96,3 +96,4 @@
   </script>
 </body>
 </html>
+
