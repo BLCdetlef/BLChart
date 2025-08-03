@@ -1,4 +1,4 @@
-// Planetare Grenzen Dashboard - JavaScript
+// Planetare Grenzen Dashboard v2 - JavaScript
 class PlanetChart {
     constructor() {
         this.chart = null;
@@ -60,6 +60,15 @@ class PlanetChart {
                         this.addLineLabels();
                     }
                 },
+                elements: {
+                    point: {
+                        radius: 4,
+                        hoverRadius: 6
+                    },
+                    line: {
+                        tension: 0.1
+                    }
+                },
                 plugins: {
                     title: {
                         display: true,
@@ -89,6 +98,7 @@ class PlanetChart {
                 },
                 scales: {
                     x: {
+                        type: 'linear',
                         title: {
                             display: true,
                             text: 'Jahr',
@@ -100,10 +110,15 @@ class PlanetChart {
                             color: '#333'
                         },
                         ticks: {
-                            color: '#fff'
+                            color: '#fff',
+                            stepSize: 50,
+                            callback: function(value) {
+                                return value;
+                            }
                         }
                     },
                     y: {
+                        type: 'linear',
                         title: {
                             display: true,
                             text: 'Wert (0-100)',
@@ -115,7 +130,11 @@ class PlanetChart {
                             color: '#333'
                         },
                         ticks: {
-                            color: '#fff'
+                            color: '#fff',
+                            stepSize: 10,
+                            callback: function(value) {
+                                return value;
+                            }
                         }
                     }
                 },
@@ -280,7 +299,9 @@ class PlanetChart {
                 y: parseFloat(row.Wert || row.value || row.Value)
             })),
             ...this.getLineStyle(parsedName),
-            parsedName: parsedName
+            parsedName: parsedName,
+            fill: false,
+            tension: 0.1
         };
 
         this.uploadedFiles.set(filename, dataset);
