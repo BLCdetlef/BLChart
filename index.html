@@ -70,56 +70,15 @@
             color: #495057;
         }
 
-        .legend {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-top: 20px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 10px;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .legend-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        .legend-item.ursache {
-            background: rgba(255, 193, 7, 0.2);
-            border: 2px solid #ffc107;
-        }
-
-        .legend-item.wirkung {
-            background: rgba(220, 53, 69, 0.2);
-            border: 2px solid #dc3545;
-        }
-
-        .legend-line {
-            width: 30px;
-            height: 3px;
-            border-radius: 2px;
-        }
-
-        .line-solid { border-top: 3px solid; }
-        .line-dashed { border-top: 3px dashed; }
-        .line-dotted { border-top: 3px dotted; }
+        /* Legende entfernt - Labels sind direkt an den Kurven */
 
         .chart-container {
             position: relative;
             height: 600px;
             margin-top: 20px;
+            background: #000;
+            border-radius: 10px;
+            padding: 20px;
         }
 
         .data-point-info {
@@ -143,6 +102,7 @@
 
         .file-upload {
             margin-bottom: 20px;
+            position: relative;
         }
 
         .file-upload input[type="file"] {
@@ -161,6 +121,32 @@
 
         .file-upload label:hover {
             background: #5a6fd8;
+        }
+
+        .admin-upload {
+            position: absolute;
+            top: 0;
+            right: 0;
+            opacity: 0.1;
+            transition: opacity 0.3s ease;
+        }
+
+        .admin-upload:hover {
+            opacity: 1;
+        }
+
+        .admin-upload input[type="file"] {
+            display: none;
+        }
+
+        .admin-upload label {
+            background: #dc3545;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            display: inline-block;
         }
 
         .uploaded-files {
@@ -201,6 +187,12 @@
                     📁 CSV-Dateien hochladen
                 </label>
                 <input type="file" id="csv-upload" multiple accept=".csv">
+                <div class="admin-upload">
+                    <label for="admin-csv-upload">
+                        🔧 Admin Upload
+                    </label>
+                    <input type="file" id="admin-csv-upload" multiple accept=".csv">
+                </div>
                 <div class="uploaded-files" id="uploaded-files"></div>
             </div>
 
@@ -237,7 +229,7 @@
                 </div>
             </div>
 
-            <div class="legend" id="legend"></div>
+            <!-- Legende entfernt - Labels sind direkt an den Kurven -->
 
             <div class="chart-container">
                 <canvas id="planetChart"></canvas>

@@ -21,6 +21,11 @@ class PlanetChart {
             this.handleFileUpload(e.target.files);
         });
 
+        // Admin Upload
+        document.getElementById('admin-csv-upload').addEventListener('change', (e) => {
+            this.handleFileUpload(e.target.files);
+        });
+
         // Controls
         document.getElementById('show-ursache').addEventListener('change', () => this.updateChart());
         document.getElementById('show-wirkung').addEventListener('change', () => this.updateChart());
@@ -50,18 +55,28 @@ class PlanetChart {
                     intersect: false,
                     mode: 'index'
                 },
+                animation: {
+                    onComplete: () => {
+                        this.addLineLabels();
+                    }
+                },
                 plugins: {
                     title: {
                         display: true,
                         text: 'Planetare Grenzen - Ursache & Wirkung',
                         font: {
-                            size: 16
-                        }
+                            size: 16,
+                            color: '#fff'
+                        },
+                        color: '#fff'
                     },
                     legend: {
                         display: false // Wir verwenden unsere eigene Legende
                     },
                     tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
                         callbacks: {
                             title: function(context) {
                                 return `Jahr: ${context[0].label}`;
@@ -76,18 +91,32 @@ class PlanetChart {
                     x: {
                         title: {
                             display: true,
-                            text: 'Jahr'
+                            text: 'Jahr',
+                            color: '#fff'
                         },
                         min: 1700,
-                        max: 2100
+                        max: 2100,
+                        grid: {
+                            color: '#333'
+                        },
+                        ticks: {
+                            color: '#fff'
+                        }
                     },
                     y: {
                         title: {
                             display: true,
-                            text: 'Wert (0-100)'
+                            text: 'Wert (0-100)',
+                            color: '#fff'
                         },
                         min: 0,
-                        max: 100
+                        max: 100,
+                        grid: {
+                            color: '#333'
+                        },
+                        ticks: {
+                            color: '#fff'
+                        }
                     }
                 },
                 onClick: (event, elements) => {
@@ -143,6 +172,38 @@ class PlanetChart {
         }
 
         return styles;
+    }
+
+    // Kurvenbezeichnungen direkt an die Kurven heften
+    addLineLabels() {
+        if (!this.chart) return;
+
+        const ctx = this.chart.ctx;
+        const datasets = this.chart.data.datasets;
+
+        datasets.forEach((dataset, index) => {
+            if (dataset.data.length > 0) {
+                const lastPoint = dataset.data[dataset.data.length - 1];
+                const meta = this.chart.getDatasetMeta(index);
+                
+                if (meta.visible) {
+                    const x = meta.data[meta.data.length - 1].x;
+                    const y = meta.data[meta.data.length - 1].y;
+                    
+                    // Label-Position berechnen
+                    const labelX = x + 10;
+                    const labelY = y;
+                    
+                    // Label zeichnen
+                    ctx.save();
+                    ctx.fillStyle = dataset.color;
+                    ctx.font = '12px Arial';
+                    ctx.textAlign = 'left';
+                    ctx.fillText(dataset.parsedName.description, labelX, labelY);
+                    ctx.restore();
+                }
+            }
+        });
     }
 
     handleFileUpload(files) {
@@ -310,32 +371,16 @@ class PlanetChart {
         this.chart.options.scales.y.min = yMin;
         this.chart.options.scales.y.max = yMax;
         this.chart.update();
+        
+        // Labels nach dem Update hinzufügen
+        setTimeout(() => {
+            this.addLineLabels();
+        }, 100);
     }
 
     updateLegend() {
-        const legendContainer = document.getElementById('legend');
-        legendContainer.innerHTML = '';
-
-        this.uploadedFiles.forEach((dataset, filename) => {
-            const parsedName = dataset.parsedName;
-            const legendItem = document.createElement('div');
-            legendItem.className = `legend-item ${parsedName.type === 'U' ? 'ursache' : 'wirkung'}`;
-            
-            const lineStyle = this.getLineStyle(parsedName);
-            const lineClass = parsedName.scope === 'G' ? 'line-solid' : 
-                            parsedName.scope === 'K' ? 'line-dashed' : 'line-dotted';
-            
-            legendItem.innerHTML = `
-                <div class="legend-line ${lineClass}" style="border-color: ${lineStyle.color}"></div>
-                <span>${parsedName.description}</span>
-            `;
-            
-            legendItem.addEventListener('click', () => {
-                this.toggleDataset(filename);
-            });
-            
-            legendContainer.appendChild(legendItem);
-        });
+        // Legende entfernt - Labels sind direkt an den Kurven
+        // Diese Funktion bleibt für Kompatibilität, macht aber nichts
     }
 
     toggleDataset(filename) {
