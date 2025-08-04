@@ -68,77 +68,170 @@
         
         const ctx = document.getElementById('myChart').getContext('2d');
         
-        // Beispieldaten (kann später angepasst werden)
-        const data = {
-            labels: Array.from({length: 401}, (_, i) => 1700 + i), // 1700 bis 2100
-            datasets: [{
-                label: 'Beispieldaten',
-                data: Array.from({length: 401}, () => Math.random() * 100), // Zufällige Werte 0-100
-                borderColor: '#00ff00',
-                backgroundColor: 'rgba(0, 255, 0, 0.1)',
-                borderWidth: 2,
-                fill: false,
-                tension: 0.1
-            }]
-        };
-        
-        const config = {
-            type: 'line',
-            data: data,
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        labels: {
-                            color: '#ffffff'
+                 // CSV-Dateien laden und verarbeiten
+         async function loadCSVData() {
+             const csvFiles = [
+                 'Daten/W_gelb_Beispielkurve.csv',
+                 'Daten/U_rot_Testkurve.csv'
+             ];
+             
+             console.log('Lade CSV-Dateien:', csvFiles);
+             const datasets = [];
+            const colors = {
+                'gelb': '#ffff00',
+                'rot': '#ff0000',
+                'grün': '#00ff00',
+                'blau': '#0000ff',
+                'orange': '#ffa500',
+                'lila': '#800080',
+                'cyan': '#00ffff',
+                'magenta': '#ff00ff',
+                'grau': '#808080',
+                'weiß': '#ffffff'
+            };
+            
+            for (const file of csvFiles) {
+                                 try {
+                     console.log('Lade Datei:', file);
+                     const response = await fetch(file);
+                     const csvText = await response.text();
+                     console.log('CSV Inhalt:', csvText.substring(0, 200) + '...');
+                     const lines = csvText.split('\n');
+                    
+                    // Grenzwerte aus Kommentarzeilen extrahieren
+                    let lowerBound = 0, upperBound = 100;
+                    const dataLines = [];
+                    
+                    for (const line of lines) {
+                        if (line.startsWith('# Unterer_Grenzwert:')) {
+                            lowerBound = parseFloat(line.split(':')[1].trim());
+                        } else if (line.startsWith('# Oberer_Grenzwert:')) {
+                            upperBound = parseFloat(line.split(':')[1].trim());
+                        } else if (line.includes(',') && !line.startsWith('#')) {
+                            dataLines.push(line);
                         }
                     }
-                },
-                scales: {
-                    x: {
-                        type: 'linear',
-                        min: 1700,
-                        max: 2100,
-                        ticks: {
-                            color: '#ffffff',
-                            stepSize: 50,
-                            callback: function(value) {
-                                return value;
+                    
+                                         // Daten verarbeiten
+                     const dataPoints = [];
+                     
+                     console.log('Datenzeilen:', dataLines);
+                     
+                     for (let i = 1; i < dataLines.length; i++) { // Skip header
+                         const parts = dataLines[i].split(',');
+                         console.log('Zeile', i, 'Parts:', parts);
+                         if (parts.length >= 3) {
+                             const year = parseInt(parts[0]);
+                             const messwert = parseFloat(parts[1]);
+                             const percent = parseFloat(parts[2]);
+                             
+                             dataPoints.push({x: year, y: percent});
+                         }
+                     }
+                     
+                     console.log('DataPoints:', dataPoints);
+                    
+                    // Farbe aus Dateinamen extrahieren
+                    const fileName = file.split('/').pop();
+                    const colorMatch = fileName.match(/_(gelb|rot|grün|blau|orange|lila|cyan|magenta|grau|weiß)_/);
+                    const color = colorMatch ? colors[colorMatch[1]] : '#ffffff';
+                    
+                    // Linientyp aus Dateinamen extrahieren
+                    const isUrsache = fileName.startsWith('U_');
+                    const borderDash = isUrsache ? [5, 5] : []; // Gestrichelt für Ursache
+                    
+                                         const dataset = {
+                         label: fileName.replace('.csv', ''),
+                         data: dataPoints,
+                         borderColor: color,
+                         backgroundColor: color + '20',
+                         borderWidth: 2,
+                         fill: false,
+                         tension: 0.1,
+                         borderDash: borderDash
+                     };
+                     
+                     console.log('Dataset:', dataset);
+                     datasets.push(dataset);
+                    
+                } catch (error) {
+                    console.error('Fehler beim Laden von', file, ':', error);
+                }
+            }
+            
+                         console.log('Alle Datasets:', datasets);
+             return datasets;
+         }
+        
+                 // Chart erstellen
+         async function createChart() {
+             const datasets = await loadCSVData();
+             
+             const data = {
+                 datasets: datasets
+             };
+            
+            const config = {
+                type: 'line',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#ffffff'
                             }
-                        },
-                        grid: {
-                            color: 'rgba(255, 255, 255, 0.1)'
-                        },
-                        title: {
-                            display: true,
-                            text: 'Jahr',
-                            color: '#ffffff'
                         }
                     },
-                    y: {
-                        min: 0,
-                        max: 100,
-                        ticks: {
-                            color: '#ffffff',
-                            callback: function(value) {
-                                return value + '%';
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            min: 1700,
+                            max: 2100,
+                            ticks: {
+                                color: '#ffffff',
+                                stepSize: 50,
+                                callback: function(value) {
+                                    return value;
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            title: {
+                                display: true,
+                                text: 'Jahr',
+                                color: '#ffffff'
                             }
                         },
-                        grid: {
-                            color: 'rgba(255, 255, 255, 0.1)'
-                        },
-                        title: {
-                            display: true,
-                            text: 'Prozent (%)',
-                            color: '#ffffff'
+                        y: {
+                            min: 0,
+                            max: 100,
+                            ticks: {
+                                color: '#ffffff',
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            title: {
+                                display: true,
+                                text: 'Prozent (%)',
+                                color: '#ffffff'
+                            }
                         }
                     }
                 }
-            }
-        };
+            };
+            
+            new Chart(ctx, config);
+        }
         
-        new Chart(ctx, config);
+        // Chart starten
+        createChart();
     </script>
 </body>
 </html> 
