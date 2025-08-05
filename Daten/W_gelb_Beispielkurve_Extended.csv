@@ -1,0 +1,36 @@
+# W_gelb_Beispielkurve_Extended.csv
+# BRUCHLAST Chart - Erweiterte CSV-Datei mit Metadaten
+
+Jahr,Messwert,Prozent
+1700,15,5.56
+1800,25,16.67
+1900,35,27.78
+2000,45,38.89
+2010,55,50.00
+2020,65,61.11
+2030,75,72.22
+2040,85,83.33
+2050,95,94.44
+2060,100,100.00
+
+# ===== METADATEN =====
+# Kurveninformationen:
+# Kurvenname: W_gelb_Beispielkurve
+# Kurventyp: W
+# Linienfarbe: gelb
+# Kurvenbeschreibung: Beispielkurve für die Demonstration der BRUCHLAST Chart Funktionalität. Diese Kurve zeigt eine kontinuierliche Steigerung von 1700 bis 2060 und dient als Referenz für die Wirkung (durchgezogene Linie).
+
+# Grenzwerte und Einheiten:
+# Unterer_Grenzwert: 10
+# Oberer_Grenzwert: 100
+# Messwert_Einheit: Einheiten
+
+# Quellenangaben:
+# Autoren: BRUCHLAST Team
+# Veröffentlichungsdatum: 2024-01-01
+# Veröffentlichungsort: BRUCHLAST Chart Demo
+# Internetlink: https://bruchlast.chart
+# Zusätzliche_Informationen: Diese Kurve dient ausschließlich zu Demonstrationszwecken und zeigt eine lineare Steigerung über den Zeitraum von 1700 bis 2060.
+
+# Formel:
+# Prozent = ((Messwert - 10) / (100 - 10)) * 100 

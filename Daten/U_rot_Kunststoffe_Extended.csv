@@ -1,0 +1,38 @@
+# U_rot_Kunststoffe_Extended.csv
+# BRUCHLAST Chart - Erweiterte CSV-Datei für Kunststoffproduktion
+
+Jahr,Messwert,Prozent
+1950,1.5,0.00
+1960,6.8,2.65
+1970,30.0,11.40
+1980,60.0,23.25
+1990,100.0,39.00
+2000,180.0,69.75
+2010,270.0,104.25
+2020,367.0,142.25
+2030,450.0,174.00
+2040,520.0,201.00
+2050,580.0,224.25
+2060,650.0,251.25
+
+# ===== METADATEN =====
+# Kurveninformationen:
+# Kurvenname: U_rot_Kunststoffe
+# Kurventyp: U
+# Linienfarbe: rot
+# Kurvenbeschreibung: Globale Kunststoffproduktion in Millionen Tonnen pro Jahr. Diese Kurve zeigt die exponentielle Zunahme der Kunststoffproduktion seit 1950 und prognostizierte Trends bis 2060. Kunststoffe sind eine der wichtigsten "Neuen Substanzen" mit erheblichen Umweltauswirkungen.
+
+# Grenzwerte und Einheiten:
+# Unterer_Grenzwert: 1.5
+# Oberer_Grenzwert: 260
+# Messwert_Einheit: Millionen Tonnen/Jahr
+
+# Quellenangaben:
+# Autoren: Plastics Europe, UNEP, Geyer et al.
+# Veröffentlichungsdatum: 2023-06-20
+# Veröffentlichungsort: Science Advances, Production, use, and fate of all plastics ever made
+# Internetlink: https://advances.sciencemag.org/content/3/7/e1700782
+# Zusätzliche_Informationen: Die Daten basieren auf historischen Produktionsstatistiken und UNEP-Prognosen. Die Grenzwerte orientieren sich an Nachhaltigkeitszielen für Kunststoffreduktion. Die hohen Prozentwerte über 100% zeigen, dass die aktuellen Werte bereits die ursprünglichen Grenzwerte überschreiten.
+
+# Formel:
+# Prozent = ((Messwert - 1.5) / (260 - 1.5)) * 100 

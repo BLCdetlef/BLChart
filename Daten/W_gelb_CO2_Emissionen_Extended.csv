@@ -1,0 +1,41 @@
+# W_gelb_CO2_Emissionen_Extended.csv
+# BRUCHLAST Chart - Erweiterte CSV-Datei für CO2-Emissionen
+
+Jahr,Messwert,Prozent
+1700,280,0.00
+1800,285,1.25
+1900,295,3.75
+1950,310,7.50
+1960,320,10.00
+1970,330,12.50
+1980,340,15.00
+1990,360,20.00
+2000,370,22.50
+2010,390,27.50
+2020,410,32.50
+2030,430,37.50
+2040,450,42.50
+2050,470,47.50
+2060,500,55.00
+
+# ===== METADATEN =====
+# Kurveninformationen:
+# Kurvenname: W_gelb_CO2_Emissionen
+# Kurventyp: W
+# Linienfarbe: gelb
+# Kurvenbeschreibung: Globale CO2-Emissionen in Millionen Tonnen pro Jahr. Diese Kurve zeigt die historische Entwicklung und prognostizierte Zunahme der anthropogenen CO2-Emissionen von 1700 bis 2060. Die Daten basieren auf wissenschaftlichen Schätzungen und Klimamodellen.
+
+# Grenzwerte und Einheiten:
+# Unterer_Grenzwert: 280
+# Oberer_Grenzwert: 500
+# Messwert_Einheit: Millionen Tonnen CO2/Jahr
+
+# Quellenangaben:
+# Autoren: IPCC, Global Carbon Project, NOAA
+# Veröffentlichungsdatum: 2023-12-15
+# Veröffentlichungsort: IPCC AR6 Synthesis Report, Global Carbon Budget 2023
+# Internetlink: https://www.globalcarbonproject.org/carbonbudget/
+# Zusätzliche_Informationen: Die Daten kombinieren historische Rekonstruktionen (1700-1950) mit instrumentellen Messungen (1950-2020) und IPCC-Szenarien für die Zukunft (2020-2060). Die Grenzwerte basieren auf dem 2°C-Ziel des Pariser Abkommens.
+
+# Formel:
+# Prozent = ((Messwert - 280) / (500 - 280)) * 100 

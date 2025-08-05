@@ -1,0 +1,36 @@
+# U_rot_Testkurve_Extended.csv
+# BRUCHLAST Chart - Erweiterte CSV-Datei mit Metadaten
+
+Jahr,Messwert,Prozent
+1700,5,10.00
+1800,10,20.00
+1900,15,30.00
+2000,20,40.00
+2010,25,50.00
+2020,30,60.00
+2030,35,70.00
+2040,40,80.00
+2050,45,90.00
+2060,50,100.00
+
+# ===== METADATEN =====
+# Kurveninformationen:
+# Kurvenname: U_rot_Testkurve
+# Kurventyp: U
+# Linienfarbe: rot
+# Kurvenbeschreibung: Testkurve für die Demonstration der BRUCHLAST Chart Funktionalität. Diese Kurve zeigt eine kontinuierliche Steigerung von 1700 bis 2060 und dient als Referenz für die Ursache (gestrichelte Linie).
+
+# Grenzwerte und Einheiten:
+# Unterer_Grenzwert: 0
+# Oberer_Grenzwert: 50
+# Messwert_Einheit: Einheiten
+
+# Quellenangaben:
+# Autoren: BRUCHLAST Team
+# Veröffentlichungsdatum: 2024-01-01
+# Veröffentlichungsort: BRUCHLAST Chart Demo
+# Internetlink: https://bruchlast.chart
+# Zusätzliche_Informationen: Diese Kurve dient ausschließlich zu Demonstrationszwecken und zeigt eine lineare Steigerung über den Zeitraum von 1700 bis 2060.
+
+# Formel:
+# Prozent = ((Messwert - 0) / (50 - 0)) * 100 
