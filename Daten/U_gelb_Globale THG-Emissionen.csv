@@ -1,0 +1,23 @@
+# Kurvenname: U_Globale THG-Emissionen
+# Kurventyp: Ursache (gestrichelte Linie)
+# Linienfarbe: rot
+# Kurvenbeschreibung: 
+# Autoren: Detlef und Aous
+# Veröffentlichungsdatum: 2023-01-01
+# Veröffentlichungsort: nature
+# Internetlink: 
+# Zusätzliche Informationen: wunschpaper
+# Grenzwerte für diese Kurve
+# Unterer_Grenzwert: 200
+# Oberer_Grenzwert: 500
+# Formel: Prozent = ((Messwert - 200) / (500 - 200)) * 100
+
+Jahr,Messwert,Prozent
+1700,250,
+1740,270,
+1790,250,
+1850,280,
+1900,300,
+1940,350,
+1990,370,
+2020,420,
