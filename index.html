@@ -43,6 +43,63 @@
             margin-left: 2px;
         }
         
+        .line-types {
+            margin-top: 10px;
+            display: flex;
+            gap: 20px;
+        }
+        
+        .line-type {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #ffffff;
+            font-size: 12px;
+        }
+        
+        .dashed-line {
+            width: 30px;
+            height: 2px;
+            background: repeating-linear-gradient(
+                to right,
+                #ffffff 0px,
+                #ffffff 4px,
+                transparent 4px,
+                transparent 8px
+            );
+        }
+        
+        .solid-line {
+            width: 30px;
+            height: 2px;
+            background-color: #ffffff;
+        }
+        
+        .legend-container {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            background-color: rgba(0, 0, 0, 0.8);
+            border: 1px solid #ffffff;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        
+        #legendTable {
+            border-collapse: collapse;
+            color: #ffffff;
+            font-size: 10px;
+        }
+        
+        #legendTable td {
+            padding: 4px 8px;
+            border: none;
+            min-width: 120px;
+            height: 20px;
+        }
+        
         .intro-bot-button {
             position: absolute;
             top: 20px;
@@ -51,9 +108,9 @@
             background-color: #333333;
             color: #ffffff;
             border: 2px solid #ffff00;
-            border-radius: 8px;
-            padding: 8px 16px;
-            font-size: 12px;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 10px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -81,8 +138,40 @@
     <div class="container">
         <div class="title">
             <h1>BRUCHLAST<span class="chart-text">chart</span></h1>
+            <div class="line-types">
+                <div class="line-type">
+                    <div class="dashed-line"></div>
+                    <span>Ursache</span>
+                </div>
+                <div class="line-type">
+                    <div class="solid-line"></div>
+                    <span>Wirkung</span>
+                </div>
+            </div>
         </div>
 
+        <div class="legend-container">
+            <table id="legendTable">
+                <tr>
+                    <td id="legend-0"></td>
+                    <td id="legend-1"></td>
+                    <td id="legend-2"></td>
+                    <td id="legend-3"></td>
+                </tr>
+                <tr>
+                    <td id="legend-4"></td>
+                    <td id="legend-5"></td>
+                    <td id="legend-6"></td>
+                    <td id="legend-7"></td>
+                </tr>
+                <tr>
+                    <td id="legend-8"></td>
+                    <td id="legend-9"></td>
+                    <td id="legend-10"></td>
+                    <td id="legend-11"></td>
+                </tr>
+            </table>
+        </div>
         <button class="intro-bot-button" onclick="playIntroAudio()">
             introBOT 🔊
         </button>
@@ -308,9 +397,7 @@
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            labels: {
-                                color: '#ffffff'
-                            }
+                            display: false
                         },
                         tooltip: {
                             enabled: true,
@@ -394,14 +481,84 @@
             console.log('Chart erstellt!');
         }
         
+        // Benutzerdefinierte Legende erstellen
+        function createCustomLegend() {
+            const datasets = [
+                { label: 'CO2-Emissionen (Klimawandel)', color: '#ffff00', dashed: false },
+                { label: 'Kunststoffe (Neue Substanzen)', color: '#ff0000', dashed: true },
+                { label: 'Testkurve (Neue Substanzen)', color: '#ff0000', dashed: true },
+                { label: 'Beispielkurve (Klimawandel)', color: '#ffff00', dashed: false }
+            ];
+            
+            // Alle 12 Zellen initialisieren
+            for (let i = 0; i < 12; i++) {
+                const cell = document.getElementById(`legend-${i}`);
+                if (cell) {
+                    cell.innerHTML = '';
+                }
+            }
+            
+            // Nur die ersten 4 Datasets in die ersten 4 Zellen einfügen
+            datasets.forEach((dataset, index) => {
+                const cell = document.getElementById(`legend-${index}`);
+                if (cell) {
+                    const legendItem = document.createElement('div');
+                    legendItem.style.cssText = `
+                        display: flex;
+                        align-items: center;
+                        gap: 6px;
+                        font-size: 9px;
+                        color: #ffffff;
+                    `;
+                    
+                    const line = document.createElement('div');
+                    line.style.cssText = `
+                        width: 16px;
+                        height: 2px;
+                        background-color: ${dataset.color};
+                        ${dataset.dashed ? 'background: repeating-linear-gradient(to right, ' + dataset.color + ' 0px, ' + dataset.color + ' 2px, transparent 2px, transparent 4px);' : ''}
+                    `;
+                    
+                    const label = document.createElement('span');
+                    label.textContent = dataset.label;
+                    
+                    legendItem.appendChild(line);
+                    legendItem.appendChild(label);
+                    cell.appendChild(legendItem);
+                }
+            });
+        }
+        
         // Chart starten
         createChart();
+        createCustomLegend();
         
 
         
         // Audio-Funktion
         function playIntroAudio() {
-            // Test-Ton generieren (funktioniert immer)
+            // IntroBOT MP3 von GitHub laden und abspielen
+            const audio = new Audio('https://github.com/BLCdetlef/BLChart/raw/main/introBOT.mp3');
+            
+            audio.addEventListener('canplaythrough', function() {
+                audio.play().then(() => {
+                    console.log('IntroBOT MP3 erfolgreich abgespielt');
+                }).catch(error => {
+                    console.error('Fehler beim Abspielen der MP3:', error);
+                    // Fallback: Test-Ton generieren
+                    playFallbackAudio();
+                });
+            });
+            
+            audio.addEventListener('error', function() {
+                console.error('Fehler beim Laden der MP3-Datei');
+                // Fallback: Test-Ton generieren
+                playFallbackAudio();
+            });
+        }
+        
+        // Fallback Audio-Funktion
+        function playFallbackAudio() {
             const audioContext = new (window.AudioContext || window.webkitAudioContext)();
             const oscillator = audioContext.createOscillator();
             const gainNode = audioContext.createGain();
@@ -419,7 +576,7 @@
             oscillator.start(audioContext.currentTime);
             oscillator.stop(audioContext.currentTime + 1);
             
-            console.log('BRUCHLAST Intro-Ton abgespielt');
+            console.log('BRUCHLAST Fallback-Ton abgespielt');
         }
     </script>
 </body>
