@@ -67,32 +67,7 @@
             transform: scale(1.05);
         }
         
-        .csv-button {
-            position: absolute;
-            top: 20px;
-            right: 140px;
-            z-index: 10;
-            background-color: #333333;
-            color: #ffffff;
-            border: 2px solid #00ff00;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            font-size: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .csv-button:hover {
-            background-color: #00ff00;
-            color: #000000;
-            transform: scale(1.1);
-        }
+
         
         .chart-container {
             width: 100%;
@@ -107,9 +82,7 @@
         <div class="title">
             <h1>BRUCHLAST<span class="chart-text">chart</span></h1>
         </div>
-        <button class="csv-button" onclick="openCSVGenerator()">
-            CSV
-        </button>
+
         <button class="intro-bot-button" onclick="playIntroAudio()">
             introBOT 🔊
         </button>
@@ -138,25 +111,45 @@
                 'cyan': '#00ffff',
                 'magenta': '#ff00ff',
                 'grau': '#808080',
-                'weiß': '#ffffff'
+                'weiss': '#ffffff',
+                'braun': '#8B4513'
             };
             
-            // Gelbe Kurve Daten (W_gelb_Beispielkurve.csv)
-            const gelbData = [
-                {x: 1700, y: 5.56},
-                {x: 1800, y: 16.67},
-                {x: 1900, y: 27.78},
-                {x: 2000, y: 38.89},
-                {x: 2010, y: 50.00},
-                {x: 2020, y: 61.11},
-                {x: 2030, y: 72.22},
-                {x: 2040, y: 83.33},
-                {x: 2050, y: 94.44},
-                {x: 2060, y: 100.00}
+            // Neue erweiterte CSV-Daten direkt eingebettet
+            const co2Data = [
+                {x: 1700, y: 0.00},
+                {x: 1800, y: 1.25},
+                {x: 1900, y: 3.75},
+                {x: 1950, y: 7.50},
+                {x: 1960, y: 10.00},
+                {x: 1970, y: 12.50},
+                {x: 1980, y: 15.00},
+                {x: 1990, y: 20.00},
+                {x: 2000, y: 22.50},
+                {x: 2010, y: 27.50},
+                {x: 2020, y: 32.50},
+                {x: 2030, y: 37.50},
+                {x: 2040, y: 42.50},
+                {x: 2050, y: 47.50},
+                {x: 2060, y: 55.00}
             ];
             
-            // Rote Kurve Daten (U_rot_Testkurve.csv)
-            const rotData = [
+            const kunststoffeData = [
+                {x: 1950, y: 0.00},
+                {x: 1960, y: 2.65},
+                {x: 1970, y: 11.40},
+                {x: 1980, y: 23.25},
+                {x: 1990, y: 39.00},
+                {x: 2000, y: 69.75},
+                {x: 2010, y: 104.25},
+                {x: 2020, y: 142.25},
+                {x: 2030, y: 174.00},
+                {x: 2040, y: 201.00},
+                {x: 2050, y: 224.25},
+                {x: 2060, y: 251.25}
+            ];
+            
+            const testkurveData = [
                 {x: 1700, y: 10.00},
                 {x: 1800, y: 20.00},
                 {x: 1900, y: 30.00},
@@ -169,10 +162,27 @@
                 {x: 2060, y: 100.00}
             ];
             
-            // Gelbe Kurve (Wirkung - durchgezogen)
+            const beispielkurveData = [
+                {x: 1700, y: 5.56},
+                {x: 1800, y: 16.67},
+                {x: 1900, y: 27.78},
+                {x: 2000, y: 38.89},
+                {x: 2010, y: 50.00},
+                {x: 2020, y: 61.11},
+                {x: 2030, y: 72.22},
+                {x: 2040, y: 83.33},
+                {x: 2050, y: 94.44},
+                {x: 2060, y: 100.00}
+            ];
+            
+            // CO2-Emissionen (Wirkung - durchgezogen, GELB)
             datasets.push({
-                label: 'W_gelb_Beispielkurve',
-                data: gelbData,
+                label: 'CO2-Emissionen (Klimawandel)',
+                data: co2Data.map(point => ({
+                    x: point.x,
+                    y: point.y,
+                    messwert: getMesswert(point.x, 'co2')
+                })),
                 borderColor: colors.gelb,
                 backgroundColor: colors.gelb + '20',
                 borderWidth: 2,
@@ -180,10 +190,14 @@
                 tension: 0.1
             });
             
-            // Rote Kurve (Ursache - gestrichelt)
+            // Kunststoffe (Ursache - gestrichelt, ROT)
             datasets.push({
-                label: 'U_rot_Testkurve',
-                data: rotData,
+                label: 'Kunststoffe (Neue Substanzen)',
+                data: kunststoffeData.map(point => ({
+                    x: point.x,
+                    y: point.y,
+                    messwert: getMesswert(point.x, 'kunststoffe')
+                })),
                 borderColor: colors.rot,
                 backgroundColor: colors.rot + '20',
                 borderWidth: 2,
@@ -192,8 +206,90 @@
                 borderDash: [5, 5]
             });
             
+            // Testkurve (Ursache - gestrichelt, ROT)
+            datasets.push({
+                label: 'Testkurve (Neue Substanzen)',
+                data: testkurveData.map(point => ({
+                    x: point.x,
+                    y: point.y,
+                    messwert: getMesswert(point.x, 'testkurve')
+                })),
+                borderColor: colors.rot,
+                backgroundColor: colors.rot + '20',
+                borderWidth: 2,
+                fill: false,
+                tension: 0.1,
+                borderDash: [5, 5]
+            });
+            
+            // Beispielkurve (Wirkung - durchgezogen, GELB)
+            datasets.push({
+                label: 'Beispielkurve (Klimawandel)',
+                data: beispielkurveData.map(point => ({
+                    x: point.x,
+                    y: point.y,
+                    messwert: getMesswert(point.x, 'beispielkurve')
+                })),
+                borderColor: colors.gelb,
+                backgroundColor: colors.gelb + '20',
+                borderWidth: 2,
+                fill: false,
+                tension: 0.1
+            });
+            
             console.log('Alle Datasets:', datasets);
             return datasets;
+        }
+        
+        // Messwerte für Tooltips
+        function getMesswert(year, kurve) {
+            const messwerte = {
+                co2: {
+                    1700: 280, 1800: 285, 1900: 295, 1950: 310, 1960: 320,
+                    1970: 330, 1980: 340, 1990: 360, 2000: 370, 2010: 390,
+                    2020: 410, 2030: 430, 2040: 450, 2050: 470, 2060: 500
+                },
+                kunststoffe: {
+                    1950: 1.5, 1960: 6.8, 1970: 30.0, 1980: 60.0, 1990: 100.0,
+                    2000: 180.0, 2010: 270.0, 2020: 367.0, 2030: 450.0,
+                    2040: 520.0, 2050: 580.0, 2060: 650.0
+                },
+                testkurve: {
+                    1700: 5, 1800: 10, 1900: 15, 2000: 20, 2010: 25,
+                    2020: 30, 2030: 35, 2040: 40, 2050: 45, 2060: 50
+                },
+                beispielkurve: {
+                    1700: 15, 1800: 25, 1900: 35, 2000: 45, 2010: 55,
+                    2020: 65, 2030: 75, 2040: 85, 2050: 95, 2060: 100
+                }
+            };
+            return messwerte[kurve][year] || 0;
+        }
+        
+        // CSV-Parser
+        function parseCSV(csvText) {
+            const lines = csvText.split('\n');
+            const data = [];
+            
+            for (const line of lines) {
+                // Überspringe Kommentare und leere Zeilen
+                if (line.startsWith('#') || line.trim() === '' || line.includes('Jahr,Messwert,Prozent')) {
+                    continue;
+                }
+                
+                const parts = line.split(',');
+                if (parts.length >= 3) {
+                    const year = parseInt(parts[0]);
+                    const messwert = parseFloat(parts[1]);
+                    const prozent = parseFloat(parts[2]);
+                    
+                    if (!isNaN(year) && !isNaN(prozent)) {
+                        data.push({x: year, y: prozent});
+                    }
+                }
+            }
+            
+            return data;
         }
         
         // Chart erstellen
@@ -218,9 +314,36 @@
                         },
                         tooltip: {
                             enabled: true,
-                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            backgroundColor: 'rgba(0, 0, 0, 0.9)',
                             titleColor: '#ffffff',
-                            bodyColor: '#ffffff'
+                            bodyColor: '#ffffff',
+                            callbacks: {
+                                title: function(context) {
+                                    return 'Jahr: ' + context[0].parsed.x;
+                                },
+                                label: function(context) {
+                                    const dataset = context.dataset;
+                                    const dataPoint = dataset.data[context.dataIndex];
+                                    const messwert = dataPoint.messwert;
+                                    const prozent = context.parsed.y.toFixed(1);
+                                    
+                                    // Einheiten basierend auf Kurve
+                                    const einheiten = {
+                                        'CO2-Emissionen (Klimawandel)': 'Millionen Tonnen CO2/Jahr',
+                                        'Kunststoffe (Neue Substanzen)': 'Millionen Tonnen/Jahr',
+                                        'Testkurve (Neue Substanzen)': 'Einheiten',
+                                        'Beispielkurve (Klimawandel)': 'Einheiten'
+                                    };
+                                    
+                                    const einheit = einheiten[dataset.label] || 'Einheiten';
+                                    
+                                    return [
+                                        dataset.label,
+                                        'Messwert: ' + messwert + ' ' + einheit,
+                                        'Prozent: ' + prozent + '%'
+                                    ];
+                                }
+                            }
                         }
                     },
                     scales: {
@@ -274,10 +397,7 @@
         // Chart starten
         createChart();
         
-        // CSV Generator öffnen
-        function openCSVGenerator() {
-            window.open('csv_generator.html', '_blank');
-        }
+
         
         // Audio-Funktion
         function playIntroAudio() {
